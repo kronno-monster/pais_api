@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller API - Australia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white shadow-2xl rounded-xl border-t-4 border-blue-600 w-full max-w-md p-8">
+        <div class="mb-6 text-center">
+            <h1 class="text-2xl font-bold text-black uppercase tracking-wider"></h1>
+        </div>
+
+        <hr class="border-gray-100 mb-6">
+
+        <div id="info-pais" class="space-y-4">
+            <p class="text-gray-500 text-center italic"></p>
+        </div>
+
+        <div class="mt-8 pt-6 border-t border-gray-100">
+            <p class="text-xs text-gray-400 text-center uppercase tracking-widest">
+            </p>
+        </div>
+    </div>
+
+    <script > 
+        const URL = "https://restcountries.com/v3.1/name/australia?fields=name,cca3,currencies,idd,subregion";
+
+fetch(URL)
+    .then(response => {
+        if (!response.ok) throw new Error("Error en la petición");
+        return response.json();
+    })
+    .then(data => {
+        const pais = data[0]; 
+        const contenedor = document.getElementById('info-pais');
+        contenedor.innerHTML = `
+            <div class="flex flex-col gap-3">
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-blue-700 font-bold uppercase text-sm">Nombre:</span>
+                    <span class="text-black font-semibold">${pais.name.common}</span>
+                </div>
+                
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-blue-700 font-bold uppercase text-sm">Código (Code):</span>
+                    <span class="text-black font-semibold">${pais.cca3}</span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-blue-700 font-bold uppercase text-sm">Moneda (Currency):</span>
+                    <span class="text-black font-semibold">
+                        ${Object.keys(pais.currencies)[0]} - ${Object.values(pais.currencies)[0].name}
+                    </span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-blue-700 font-bold uppercase text-sm">Código de Llamada:</span>
+                    <span class="text-black font-semibold">${pais.idd.root}${pais.idd.suffixes[0]}</span>
+                </div>
+
+                <div class="flex justify-between border-b pb-2">
+                    <span class="text-blue-700 font-bold uppercase text-sm">Subregión:</span>
+                    <span class="text-black font-semibold">${pais.subregion}</span>
+                </div>
+            </div>
+        `;
+    })
+    .catch(error => {
+        document.getElementById('info-pais').innerHTML = `
+            <p class="text-red-500 font-bold text-center">Error al cargar: ${error.message}</p>
+        `;
+    });
+    </script>
+
+</body>
+</html>
+
